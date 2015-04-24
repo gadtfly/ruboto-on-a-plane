@@ -25,6 +25,10 @@ class ZeroedArray < Array
   end
 end
 
+# Sorry about shitty variable names.
+# Written on a phone while travelling
+# as an exercise deliberately meant
+# to reminisce about TI-BASIC.
 class VM
   include SpoofedGets
   attr_accessor :l, :p, :c, :s, :a, :i

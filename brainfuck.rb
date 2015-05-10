@@ -1,5 +1,5 @@
 add2 = ",>,[-<+>]<."
-addN = "[>,]<[>[-<+>]<<]>." # looks reasonable but ruboto irb keeps crashing: doesn't seem to catch stack overflow; also printing apparently lazy, so debugging impossible
+addN = "[>,]<<[>[-<+>]<<]>."
 
 program = addN
 input = [5,7,13,0]

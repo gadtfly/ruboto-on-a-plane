@@ -1,52 +1,48 @@
-program = ",[.-]"
+add2 = ",>,[-<+>]<."
+addN = "[>,]<[>[-<+>]<<]>." # looks reasonable but ruboto irb keeps crashing: doesn't seem to catch stack overflow; also printing apparently lazy, so debugging impossible
 
-$input = [5].to_enum
+program = addN
+input = [5,7,13,0]
 
-language = {
-  '+' => ->{ a[i] += 1 },
-  '-' => ->{ a[i] -= 1 },
-  '>' => ->{ @i += 1 },
-  '<' => ->{ @i -= 1 },
-  '[' => ->{ s << c },
-  ']' => ->{ a[i].zero? ? s.pop : @c = s.last },
-  ',' => ->{ a[i] = gets },
-  '.' => ->{ puts a[i] }
-}
-
-module SpoofedGets
-  def gets
-    $input.next
-  end
-end
+language = { '+' => ->{ array[index] += 1 },
+             '-' => ->{ array[index] -= 1 },
+             '>' => ->{ @index += 1 },
+             '<' => ->{ @index -= 1 },
+             '[' => ->{ stack << counter },
+             ']' => ->{ array[index].zero? ? stack.pop : @counter = stack.last },
+             ',' => ->{ array[index] = gets },
+             '.' => ->{ puts array[index] } }
 
 class ZeroedArray < Array
-  def [](i)
-    super(i) || 0
+  def [](index)
+    super(index) || 0
   end
 end
 
-# Sorry about shitty variable names.
-# Written on a phone while travelling
-# as an exercise deliberately meant
-# to reminisce about TI-BASIC.
 class VM
-  include SpoofedGets
-  attr_accessor :l, :p, :c, :s, :a, :i
-  
-  def initialize(l, p)
-    @l = l
-    @p = p
-    @c = 0
-    @s = []
-    @a = ZeroedArray.new
-    @i = 0
+  attr_reader :language, :program, :input
+  attr_reader :counter, :stack, :array, :index
+
+  def initialize(language, program, input)
+    @language = language
+    @program  = program
+    @input    = input.to_enum
+
+    @counter = 0
+    @stack   = []
+    @array   = ZeroedArray.new
+    @index   = 0
+  end
+
+  def gets
+    input.next
   end
 
   def run!
-    instance_exec(&l[p[c]])
-    @c += 1
-    run! if p[c]
+    instance_exec(&language[program[counter]])
+    @counter += 1
+    run! unless program[counter].nil?
   end
 end
 
-VM.new(language, program).run!
+VM.new(language, program, input).run!
